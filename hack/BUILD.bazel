@@ -1,6 +1,3 @@
-load("@py_deps//:requirements.bzl", "requirement")
-load("@build_bazel_rules_nodejs//:defs.bzl", "nodejs_test")
-
 package(default_visibility = ["//visibility:public"])
 
 py_test(
@@ -19,30 +16,6 @@ py_test(
     data = ["//:all-srcs"],
     python_version = "PY3",
     tags = ["lint"],
-)
-
-sh_test(
-    name = "verify-pylint",
-    srcs = ["verify-pylint.sh"],
-    data = [
-        ":pylint_bin",
-        "//:all-srcs",
-    ],
-    tags = ["lint"],
-)
-
-nodejs_test(
-    name = "verify-tslint",
-    data = [
-        "//:all-srcs",
-        "@npm//tslint",
-    ],
-    entry_point = "@npm//:node_modules/tslint/bin/tslint",
-    tags = ["lint"],
-    templated_args = [
-        "-p",
-        ".",
-    ],
 )
 
 MISSPELL = "@com_github_client9_misspell//cmd/misspell"
@@ -276,33 +249,6 @@ sh_test(
     tags = ["lint"],
 )
 
-py_binary(
-    name = "pylint_bin",
-    srcs = ["pylint_bin.py"],
-    python_version = "PY2",
-    tags = ["lint"],
-    # NOTE: this should only contain direct third party imports and pylint
-    deps = [
-        requirement("astroid"),
-        requirement("backports.functools_lru_cache"),
-        requirement("configparser"),
-        requirement("enum34"),
-        requirement("influxdb"),
-        requirement("isort"),
-        requirement("lazy-object-proxy"),
-        requirement("pylint"),
-        requirement("pytz"),
-        requirement("PyYAML"),
-        requirement("requests"),
-        requirement("setuptools"),
-        requirement("sh"),
-        requirement("singledispatch"),
-        requirement("six"),
-        requirement("wrapt"),
-        requirement("ruamel.yaml"),
-    ],
-)
-
 sh_binary(
     name = "update-gofmt",
     srcs = ["update-gofmt.sh"],
@@ -317,46 +263,6 @@ sh_test(
     data = [
         "@//:all-srcs",
         "@go_sdk//:bin/gofmt",
-    ],
-    tags = ["lint"],
-)
-
-genrule(
-    name = "generate-security-jobs",
-    srcs = [
-        "//config:all-srcs",
-        "//prow:config.yaml",
-    ],
-    outs = ["zz.security-jobs.yaml"],
-    # $@ == expected location for zz.security-jobs.yaml
-    cmd = "./$(location //config/jobs/kubernetes-security:genjobs) --config=prow/config.yaml --jobs=config/jobs --output=\"$@\"",
-    tools = ["//config/jobs/kubernetes-security:genjobs"],
-)
-
-sh_binary(
-    name = "update-config",
-    srcs = ["update-config.sh"],
-    data = [
-        ":zz.security-jobs.yaml",
-    ],
-)
-
-sh_test(
-    name = "verify-config",
-    srcs = ["verify-config.sh"],
-    args = [
-        "$(location //prow/cmd/checkconfig)",
-        "--config-path=prow/config.yaml",
-        "--job-config-path=config/jobs",
-        "--plugin-config=prow/plugins.yaml",
-    ],
-    data = [
-        ":zz.security-jobs.yaml",
-        "//config:all-srcs",
-        "//config/jobs/kubernetes-security:all-srcs",
-        "//prow:config.yaml",
-        "//prow:plugins.yaml",
-        "//prow/cmd/checkconfig",
     ],
     tags = ["lint"],
 )

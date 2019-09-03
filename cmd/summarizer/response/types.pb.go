@@ -22,8 +22,8 @@ package response
 import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
-	config "k8s.io/test-infra/testgrid/config"
-	summary "k8s.io/test-infra/testgrid/summary"
+	config "github.com/GoogleCloudPlatform/testgrid/config"
+	summary "github.com/GoogleCloudPlatform/testgrid/summary"
 	math "math"
 )
 

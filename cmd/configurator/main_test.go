@@ -20,7 +20,7 @@ import (
 	"context"
 	"flag"
 	"io/ioutil"
-	"k8s.io/test-infra/testgrid/config"
+	"github.com/GoogleCloudPlatform/testgrid/config"
 	"os"
 	"reflect"
 	"testing"

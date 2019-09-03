@@ -24,8 +24,8 @@ import (
 	"testing"
 
 	"k8s.io/test-infra/pkg/io"
-	"k8s.io/test-infra/testgrid/config"
-	"k8s.io/test-infra/testgrid/issue_state"
+	"github.com/GoogleCloudPlatform/testgrid/config"
+	"github.com/GoogleCloudPlatform/testgrid/issue_state"
 
 	"k8s.io/test-infra/prow/flagutil"
 	"k8s.io/test-infra/prow/github"

@@ -22,7 +22,7 @@ import (
 	"io"
 
 	"github.com/golang/protobuf/proto"
-	"k8s.io/test-infra/testgrid/config"
+	"github.com/GoogleCloudPlatform/testgrid/config"
 	"sigs.k8s.io/yaml"
 )
 

@@ -24,8 +24,8 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
-	response "k8s.io/test-infra/testgrid/cmd/summarizer/response"
-	summary "k8s.io/test-infra/testgrid/summary"
+	response "github.com/GoogleCloudPlatform/testgrid/cmd/summarizer/response"
+	summary "github.com/GoogleCloudPlatform/testgrid/summary"
 	math "math"
 )
 

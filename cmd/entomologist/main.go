@@ -38,8 +38,8 @@ import (
 	"k8s.io/test-infra/prow/config/secret"
 	"k8s.io/test-infra/prow/flagutil"
 	"k8s.io/test-infra/prow/github"
-	"k8s.io/test-infra/testgrid/config"
-	"k8s.io/test-infra/testgrid/issue_state"
+	"github.com/GoogleCloudPlatform/testgrid/config"
+	"github.com/GoogleCloudPlatform/testgrid/issue_state"
 )
 
 type githubClient interface {

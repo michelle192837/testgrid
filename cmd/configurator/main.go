@@ -30,7 +30,7 @@ import (
 	"time"
 
 	prowConfig "k8s.io/test-infra/prow/config"
-	"k8s.io/test-infra/testgrid/util/gcs"
+	"github.com/GoogleCloudPlatform/testgrid/util/gcs"
 	"sigs.k8s.io/yaml"
 
 	"cloud.google.com/go/storage"

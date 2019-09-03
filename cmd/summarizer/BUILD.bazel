@@ -58,9 +58,9 @@ filegroup(
     name = "all-srcs",
     srcs = [
         ":package-srcs",
-        "//testgrid/cmd/summarizer/example:all-srcs",
-        "//testgrid/cmd/summarizer/response:all-srcs",
-        "//testgrid/cmd/summarizer/summary:all-srcs",
+        "//cmd/summarizer/example:all-srcs",
+        "//cmd/summarizer/response:all-srcs",
+        "//cmd/summarizer/summary:all-srcs",
     ],
     tags = ["automanaged"],
     visibility = ["//visibility:public"],

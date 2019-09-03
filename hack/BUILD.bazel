@@ -148,30 +148,6 @@ sh_test(
     ],
 )
 
-sh_binary(
-    name = "update-labels",
-    srcs = ["update-labels.sh"],
-    args = ["$(location //label_sync)"],
-    data = ["//label_sync"],
-)
-
-sh_test(
-    name = "verify-labels",
-    srcs = ["verify-labels.sh"],
-    args = [
-        "$(location :update-labels)",
-        "$(location //label_sync)",
-    ],
-    data = [
-        ":update-labels",
-        "//label_sync",
-        "//label_sync:labels.md",
-        "//label_sync:labels.md.tmpl",
-        "//label_sync:labels.yaml",
-    ],
-    tags = ["lint"],
-)
-
 test_suite(
     name = "verify-all",
     tags = ["lint"],  # picks up all non-manual targets with this tag
@@ -271,7 +247,7 @@ sh_binary(
     name = "update-gopherage",
     srcs = ["update-gopherage.sh"],
     data = [
-        "//gopherage/cmd/html/static:zz.browser_bundle.es2015.js",
+        "@io_k8s_test_infra//gopherage/cmd/html/static:zz.browser_bundle.es2015.js",
     ],
 )
 
@@ -279,8 +255,8 @@ sh_test(
     name = "verify-gopherage",
     srcs = ["verify-gopherage.sh"],
     data = [
-        "//gopherage/cmd/html/static:browser_bundle.es2015.js",
-        "//gopherage/cmd/html/static:zz.browser_bundle.es2015.js",
+        "@io_k8s_test_infra//gopherage/cmd/html/static:browser_bundle.es2015.js",
+        "@io_k8s_test_infra//gopherage/cmd/html/static:zz.browser_bundle.es2015.js",
     ],
     tags = ["lint"],
 )

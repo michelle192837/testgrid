@@ -68,3 +68,8 @@ filegroup(
     tags = ["automanaged"],
     visibility = ["//visibility:public"],
 )
+
+exports_files([
+    "go.mod",
+    "go.sum",
+])

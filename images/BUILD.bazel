@@ -13,11 +13,11 @@
 # limitations under the License.
 
 load("//def:image.bzl", "tags")
-load("//prow:def.bzl", "prow_push")
+load("//:def.bzl", "push_image")
 
 package(default_visibility = ["//testgrid:__subpackages__"])
 
-prow_push(
+push_image(
     name = "push",
     images = tags({
         "{STABLE_TESTGRID_REPO}/updater": "//testgrid/cmd/updater:image",

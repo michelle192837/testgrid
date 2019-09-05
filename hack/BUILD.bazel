@@ -21,52 +21,6 @@ py_test(
 MISSPELL = "@com_github_client9_misspell//cmd/misspell"
 
 sh_test(
-    name = "verify-codegen",
-    srcs = ["verify-codegen.sh"],
-    args = [
-        "$(location :update-codegen)",
-        "$(location @io_k8s_code_generator//cmd/client-gen)",
-        "$(location @io_k8s_code_generator//cmd/deepcopy-gen)",
-        "$(location @io_k8s_code_generator//cmd/informer-gen)",
-        "$(location @io_k8s_code_generator//cmd/lister-gen)",
-    ],
-    data = [
-        ":boilerplate/boilerplate.generated.go.txt",
-        ":update-codegen",
-        "//:go.mod",
-        "//:go.sum",
-        "@//:all-srcs",
-        "@go_sdk//:files",
-        "@io_k8s_code_generator//cmd/client-gen",
-        "@io_k8s_code_generator//cmd/deepcopy-gen",
-        "@io_k8s_code_generator//cmd/informer-gen",
-        "@io_k8s_code_generator//cmd/lister-gen",
-    ],
-    tags = ["lint"],
-)
-
-sh_binary(
-    name = "update-codegen",
-    srcs = ["update-codegen.sh"],
-    args = [
-        "$(location @io_k8s_code_generator//cmd/client-gen)",
-        "$(location @io_k8s_code_generator//cmd/deepcopy-gen)",
-        "$(location @io_k8s_code_generator//cmd/informer-gen)",
-        "$(location @io_k8s_code_generator//cmd/lister-gen)",
-    ],
-    data = [
-        ":boilerplate/boilerplate.generated.go.txt",
-        "//:go.mod",
-        "//:go.sum",
-        "@go_sdk//:files",
-        "@io_k8s_code_generator//cmd/client-gen",
-        "@io_k8s_code_generator//cmd/deepcopy-gen",
-        "@io_k8s_code_generator//cmd/informer-gen",
-        "@io_k8s_code_generator//cmd/lister-gen",
-    ],
-)
-
-sh_test(
     name = "verify-spelling",
     srcs = ["verify-spelling.sh"],
     args = [
@@ -104,9 +58,9 @@ protoc_grpc = "plugins=grpc"
 # Go package import path. Each mapping entry is prefixed with the keyword "M".
 # Reference the https://github.com/golang/protobuf "Parameters" section.
 proto_importmap = ",".join([
-    "Mtestgrid/config/config.proto=k8s.io/test-infra/testgrid/config",
-    "Mtestgrid/summary/summary.proto=k8s.io/test-infra/testgrid/summary",
-    "Mtestgrid/cmd/summarizer/response/types.proto=k8s.io/test-infra/testgrid/cmd/summarizer/response",
+    "Mconfig/config.proto=github.com/GoogleCloudPlatform/testgrid/config",
+    "Msummary/summary.proto=github.com/GoogleCloudPlatform/testgrid/summary",
+    "Mcmd/summarizer/response/types.proto=github.com/GoogleCloudPlatform/testgrid/cmd/summarizer/response",
 ])
 
 sh_binary(
@@ -146,6 +100,7 @@ sh_test(
         protoc_gen_go,
         "@//:all-srcs",
     ],
+    tags = ["lint"],
 )
 
 test_suite(

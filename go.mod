@@ -14,6 +14,7 @@ require (
 	google.golang.org/api v0.9.0
 	google.golang.org/genproto v0.0.0-20190819201941-24fa4b261c55
 	google.golang.org/grpc v1.23.0
+	k8s.io/api v0.0.0-20190816222004-e3a6b8045b0b
 	k8s.io/apimachinery v0.0.0-20190831074630-461753078381
 	k8s.io/code-generator v0.0.0-20190831074504-732c9ca86353
 	k8s.io/repo-infra v0.0.0-20190806171332-9f4571ad7242

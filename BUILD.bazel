@@ -56,6 +56,7 @@ filegroup(
         "//cmd/summarizer:all-srcs",
         "//cmd/updater:all-srcs",
         "//config:all-srcs",
+        "//def:all-srcs",
         "//hack:all-srcs",
         "//images:all-srcs",
         "//issue_state:all-srcs",

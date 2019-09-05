@@ -4,7 +4,7 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library")
 go_library(
     name = "go_default_library",
     embed = [":response_go_proto"],
-    importpath = "k8s.io/test-infra/testgrid/cmd/summarizer/response",
+    importpath = "github.com/GoogleCloudPlatform/testgrid/cmd/summarizer/response",
     visibility = ["//visibility:public"],
 )
 
@@ -27,18 +27,18 @@ proto_library(
     srcs = ["types.proto"],
     visibility = ["//visibility:public"],
     deps = [
-        "//testgrid/config:config_proto",
-        "//testgrid/summary:summary_proto",
+        "//config:config_proto",
+        "//summary:summary_proto",
     ],
 )
 
 go_proto_library(
     name = "response_go_proto",
-    importpath = "k8s.io/test-infra/testgrid/cmd/summarizer/response",
+    importpath = "github.com/GoogleCloudPlatform/testgrid/cmd/summarizer/response",
     proto = ":response_proto",
     visibility = ["//visibility:public"],
     deps = [
-        "//testgrid/config:go_default_library",
-        "//testgrid/summary:go_default_library",
+        "//config:go_default_library",
+        "//summary:go_default_library",
     ],
 )

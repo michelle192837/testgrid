@@ -1,7 +1,7 @@
 package(default_visibility = ["//visibility:public"])
 
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
-load("//prow:def.bzl", "prow_image")
+load("//:def.bzl", "make_image")
 
 go_binary(
     name = "configurator",
@@ -9,7 +9,7 @@ go_binary(
     pure = "on",
 )
 
-prow_image(name = "image")
+make_image(name = "image")
 
 go_test(
     name = "go_default_test",

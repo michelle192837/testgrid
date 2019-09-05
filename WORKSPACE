@@ -58,6 +58,7 @@ http_archive(
 load("@io_bazel_rules_go//go:deps.bzl", "go_register_toolchains", "go_rules_dependencies")
 
 go_rules_dependencies()
+
 go_register_toolchains()
 
 load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
@@ -154,7 +155,7 @@ git_repository(
 
 load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_repositories")
 
-k8s_repositories()
+k8s_repositories()  # TODO(chases2): determine if needed
 
 git_repository(
     name = "io_k8s_repo_infra",

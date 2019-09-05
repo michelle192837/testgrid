@@ -18,7 +18,7 @@ filegroup(
     name = "all-srcs",
     srcs = [
         ":package-srcs",
-        "//testgrid/metadata/junit:all-srcs",
+        "//metadata/junit:all-srcs",
     ],
     tags = ["automanaged"],
     visibility = ["//visibility:public"],

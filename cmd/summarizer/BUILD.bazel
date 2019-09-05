@@ -1,13 +1,13 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
 load("@bazel_gazelle//:def.bzl", "gazelle")
-load("//prow:def.bzl", "prow_image")
+load("//:def.bzl", "make_image")
 
 # gazelle:prefix k8s.io/test-infra/testgrid/cmd/summarizer
 gazelle(
     name = "gazelle",
 )
 
-prow_image(
+make_image(
     name = "image",
     visibility = ["//visibility:public"],
 )
@@ -58,9 +58,9 @@ filegroup(
     name = "all-srcs",
     srcs = [
         ":package-srcs",
-        "//testgrid/cmd/summarizer/example:all-srcs",
-        "//testgrid/cmd/summarizer/response:all-srcs",
-        "//testgrid/cmd/summarizer/summary:all-srcs",
+        "//cmd/summarizer/example:all-srcs",
+        "//cmd/summarizer/response:all-srcs",
+        "//cmd/summarizer/summary:all-srcs",
     ],
     tags = ["automanaged"],
     visibility = ["//visibility:public"],

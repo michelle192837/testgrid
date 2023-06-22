@@ -27,10 +27,26 @@ import (
 	statepb "github.com/GoogleCloudPlatform/testgrid/pb/state"
 	statuspb "github.com/GoogleCloudPlatform/testgrid/pb/test_status"
 	"github.com/GoogleCloudPlatform/testgrid/pkg/updater"
+	"github.com/GoogleCloudPlatform/testgrid/util/gcs"
 	timestamppb "github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/sirupsen/logrus"
 	resultstorepb "google.golang.org/genproto/googleapis/devtools/resultstore/v2"
 )
+
+// Updater returns a ResultStore-based GroupUpdater, which knows how to process result data stored in ResultStore.
+func Updater(client *downloadClient, gcsClient gcs.Client, groupTimeout time.Duration, write bool) updater.GroupUpdater {
+	return func(parent context.Context, log logrus.FieldLogger, tg *configpb.TestGroup, gridPath gcs.Path) (bool, error) {
+		if !tg.UseKubernetesClient && (tg.ResultSource == nil || tg.ResultSource.GetGcsConfig() == nil) {
+			log.Debug("Skipping non-kubernetes client group")
+			return false, nil
+		}
+		ctx, cancel := context.WithTimeout(parent, groupTimeout)
+		defer cancel()
+		rsColumnReader := ResultStoreColumnReader(client, 0)
+		reprocess := 20 * time.Minute // allow 20m for prow to finish uploading artifacts
+		return updater.InflateDropAppend(ctx, log, gcsClient, tg, gridPath, write, rsColumnReader, reprocess)
+	}
+}
 
 // ResultStoreColumnReader fetches results since last update from ResultStore and translates them into columns.
 func ResultStoreColumnReader(client *downloadClient, reprocess time.Duration) updater.ColumnReader {
@@ -113,6 +129,15 @@ func processGroup(result *fetchResult) updater.InflatedColumn {
 			CellID: result.Invocation.GetId().GetInvocationId(),
 		}
 	}
+	invStatus, ok := convertStatus[result.Invocation.GetStatusAttributes().GetStatus()]
+	if !ok {
+		invStatus = statuspb.TestStatus_UNKNOWN
+	}
+	cells["Overall"] = updater.Cell{
+		Result: invStatus,
+		ID: "Overall",
+		CellID: result.Invocation.GetId().GetInvocationId(),
+	}
 	return updater.InflatedColumn{
 		Column: col,
 		Cells:  cells,
@@ -129,7 +154,7 @@ func queryAfter(query string, when time.Time) string {
 // TODO: Replace these hardcoded values with adjustable ones.
 const (
 	testProjectID = "k8s-testgrid"
-	testQuery     = "invocation_attributes.labels:\"prow\""
+	testQuery     = "invocation_attributes.labels:\"testgrid\""
 	testToken     = "fake-token-1234"
 )
 

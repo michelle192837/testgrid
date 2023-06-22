@@ -85,10 +85,10 @@ func (mets *Metrics) start() *metrics.CycleReporter {
 // will be downloaded at the same time.
 //
 // Return true if there are more results to process.
-type GroupUpdater func(parent context.Context, log logrus.FieldLogger, client gcs.Client, tg *configpb.TestGroup, gridPath gcs.Path) (bool, error)
+type GroupUpdater func(parent context.Context, log logrus.FieldLogger, tg *configpb.TestGroup, gridPath gcs.Path) (bool, error)
 
 // GCS returns a GCS-based GroupUpdater, which knows how to process result data stored in GCS.
-func GCS(poolCtx context.Context, colClient gcs.Client, groupTimeout, buildTimeout time.Duration, concurrency int, write bool, enableIgnoreSkip bool) GroupUpdater {
+func GCS(poolCtx context.Context, client gcs.Client, groupTimeout, buildTimeout time.Duration, concurrency int, write bool, enableIgnoreSkip bool) GroupUpdater {
 	var readResult *resultReader
 	if poolCtx == nil {
 		// TODO(fejta): remove check soon
@@ -96,14 +96,14 @@ func GCS(poolCtx context.Context, colClient gcs.Client, groupTimeout, buildTimeo
 	}
 	readResult = resultReaderPool(poolCtx, logrus.WithField("pool", "readResult"), concurrency)
 
-	return func(parent context.Context, log logrus.FieldLogger, client gcs.Client, tg *configpb.TestGroup, gridPath gcs.Path) (bool, error) {
+	return func(parent context.Context, log logrus.FieldLogger, tg *configpb.TestGroup, gridPath gcs.Path) (bool, error) {
 		if !tg.UseKubernetesClient && (tg.ResultSource == nil || tg.ResultSource.GetGcsConfig() == nil) {
 			log.Debug("Skipping non-kubernetes client group")
 			return false, nil
 		}
 		ctx, cancel := context.WithTimeout(parent, groupTimeout)
 		defer cancel()
-		gcsColReader := gcsColumnReader(colClient, buildTimeout, readResult, enableIgnoreSkip)
+		gcsColReader := gcsColumnReader(client, buildTimeout, readResult, enableIgnoreSkip)
 		reprocess := 20 * time.Minute // allow 20m for prow to finish uploading artifacts
 		return InflateDropAppend(ctx, log, client, tg, gridPath, write, gcsColReader, reprocess)
 	}
@@ -399,7 +399,7 @@ func Update(parent context.Context, client gcs.ConditionalClient, mets *Metrics,
 			lock.Unlock()
 		}()
 		start := time.Now()
-		unprocessed, err := updateGroup(ctx, log, client, tg, *tgp)
+		unprocessed, err := updateGroup(ctx, log, tg, *tgp)
 		log.WithField("duration", time.Since(start)).Info("Finished processing group.")
 		if err != nil {
 			log := log.WithError(err)

@@ -83,6 +83,11 @@ func Connect(ctx context.Context, serviceAccountPath string) (*grpc.ClientConn, 
 func (c *downloadClient) Search(ctx context.Context, log logrus.FieldLogger, query, projectID string, fields ...string) ([]string, error) {
 	var ids []string
 	nextPageToken := ""
+	fieldMaskCtx := fieldMask(
+		ctx,
+		"next_page_token",
+		"invocations.id",
+	)
 	for {
 		req := &resultstore.SearchInvocationsRequest{
 			Query:     query,
@@ -91,7 +96,7 @@ func (c *downloadClient) Search(ctx context.Context, log logrus.FieldLogger, que
 				PageToken: nextPageToken,
 			},
 		}
-		resp, err := c.client.SearchInvocations(ctx, req)
+		resp, err := c.client.SearchInvocations(fieldMaskCtx, req)
 		if err != nil {
 			return nil, err
 		}
@@ -144,6 +149,7 @@ func (c *downloadClient) FetchInvocation(ctx context.Context, log logrus.FieldLo
 		if err != nil {
 			return nil, err
 		}
+		log.WithField("resp", resp.GetInvocation()).Debug("Fetched invocation.")
 		if result.Invocation == nil {
 			result.Invocation = resp.GetInvocation()
 		}

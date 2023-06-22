@@ -29,6 +29,7 @@ import (
 	gpubsub "cloud.google.com/go/pubsub"
 	"github.com/GoogleCloudPlatform/testgrid/pkg/pubsub"
 	"github.com/GoogleCloudPlatform/testgrid/pkg/updater"
+	"github.com/GoogleCloudPlatform/testgrid/pkg/updater/resultstore"
 	"github.com/GoogleCloudPlatform/testgrid/util"
 	"github.com/GoogleCloudPlatform/testgrid/util/gcs"
 	"github.com/GoogleCloudPlatform/testgrid/util/metrics/prometheus"
@@ -52,6 +53,7 @@ type options struct {
 	subscriptions    util.Strings
 	reprocessList    util.Strings
 	enableIgnoreSkip bool
+	enableResultStore bool
 
 	debug    bool
 	trace    bool
@@ -112,6 +114,7 @@ func gatherFlagOptions(fs *flag.FlagSet, args ...string) options {
 	fs.StringVar(&o.gridPrefix, "grid-prefix", "grid", "Join this with the grid name to create the GCS suffix")
 
 	fs.BoolVar(&o.enableIgnoreSkip, "enable-ignore-skip", false, "If true, enable ignore_skip behavior.")
+	fs.BoolVar(&o.enableResultStore, "enable-resultstore", false, "If true, fetch results from ResultStore.")
 
 	fs.BoolVar(&o.debug, "debug", false, "Log debug lines if set")
 	fs.BoolVar(&o.trace, "trace", false, "Log trace and debug lines if set")
@@ -163,7 +166,16 @@ func main() {
 	})
 	log.Info("Configured concurrency")
 
+	rsConn, err := resultstore.Connect(ctx, "")
+	if err != nil {
+		logrus.WithError(err).Fatal("Failed to create ResultStore connection.")
+	}
+	rsClient := resultstore.NewClient(rsConn)
+
 	groupUpdater := updater.GCS(ctx, client, opt.groupTimeout, opt.buildTimeout, opt.buildConcurrency, opt.confirm, opt.enableIgnoreSkip)
+	if opt.enableResultStore {
+		groupUpdater = resultstore.Updater(rsClient, client, opt.groupTimeout, opt.confirm)
+	}
 
 	mets := updater.CreateMetrics(prometheus.NewFactory())
 

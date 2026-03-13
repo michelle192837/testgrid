@@ -88,7 +88,7 @@ load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies")
 
 go_rules_dependencies()
 
-go_register_toolchains(version = "1.18.3")
+go_register_toolchains(version = "1.26.0")
 
 load("//:repos.bzl", "go_repositories")
 

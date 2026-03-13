@@ -72,7 +72,7 @@ func TestConvertToInvocations(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			got := convertToInvocations(tc.response)
 			if !deepEqual(got, tc.expected) {
-				t.Errorf(diff(got, tc.expected))
+				t.Errorf("convertToInvocations(%s) differed (-got, +want): %s", tc.response, diff(got, tc.expected))
 			}
 		})
 	}

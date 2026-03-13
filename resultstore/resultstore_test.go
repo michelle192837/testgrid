@@ -65,7 +65,7 @@ func TestDur(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			if actual := dur(tc.dur); !deepEqual(actual, tc.expected) {
-				t.Errorf(diff(actual, tc.expected))
+				t.Errorf("dur(%s) differed (-got, +want): %s", tc.dur, diff(actual, tc.expected))
 			}
 		})
 	}
@@ -107,7 +107,7 @@ func TestStamp(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			if actual := stamp(tc.when); !deepEqual(actual, tc.expected) {
-				t.Errorf(diff(actual, tc.expected))
+				t.Errorf("stamp(%s) differed (-got, +want): %s", tc.when, diff(actual, tc.expected))
 			}
 		})
 	}
@@ -144,7 +144,7 @@ func TestTiming(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			actual := timing(tc.when, tc.d)
 			if !deepEqual(actual, tc.expected) {
-				t.Errorf(diff(actual, tc.expected))
+				t.Errorf("timing(%s, %s) differed (-got, +want): %s", tc.when, tc.d, diff(actual, tc.expected))
 			}
 		})
 	}
@@ -247,7 +247,7 @@ func TestProperties(t *testing.T) {
 				}()
 				actual := Properties(tc.input...)
 				if !deepEqual(actual, tc.expected) {
-					t.Errorf(diff(actual, tc.expected))
+					t.Errorf("Properties(%s) differed (-got, +want): %s", tc.input, diff(actual, tc.expected))
 				}
 			}()
 			if shocked != tc.shock {
@@ -376,22 +376,22 @@ func TestFromTarget(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			tgt := fromTarget(tc.t)
 			if !deepEqual(tgt.Name, tc.expected.Name) {
-				t.Errorf(diff(tgt.Name, tc.expected.Name))
+				t.Errorf("fromTarget(%s).Name differed (-got, +want): %s", tc.t, diff(tgt.Name, tc.expected.Name))
 			}
 			if !deepEqual(tgt.Tags, tc.expected.Tags) {
-				t.Errorf(diff(tgt.Tags, tc.expected.Tags))
+				t.Errorf("fromTarget(%s).Tags differed (-got, +want): %s", tc.t, diff(tgt.Tags, tc.expected.Tags))
 			}
 			if !deepEqual(tgt.Properties, tc.expected.Properties) {
-				t.Errorf(diff(tgt.Properties, tc.expected.Properties))
+				t.Errorf("fromTarget(%s).Properties differed (-got, +want): %s", tc.t, diff(tgt.Properties, tc.expected.Properties))
 			}
 			if !deepEqual(tgt.Duration, tc.expected.Duration) {
-				t.Errorf(diff(tgt.Duration, tc.expected.Duration))
+				t.Errorf("fromTarget(%s).Duration differed (-got, +want): %s", tc.t, diff(tgt.Duration, tc.expected.Duration))
 			}
 			if !deepEqual(tgt.Status, tc.expected.Status) {
-				t.Errorf(diff(tgt.Status, tc.expected.Status))
+				t.Errorf("fromTarget(%s).Status differed (-got, +want): %s", tc.t, diff(tgt.Status, tc.expected.Status))
 			}
 			if !deepEqual(tgt.Description, tc.expected.Description) {
-				t.Errorf(diff(tgt.Description, tc.expected.Description))
+				t.Errorf("fromTarget(%s).Description differed (-got, +want): %s", tc.t, diff(tgt.Description, tc.expected.Description))
 			}
 		})
 	}
